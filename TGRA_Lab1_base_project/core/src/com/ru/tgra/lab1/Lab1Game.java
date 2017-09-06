@@ -1,6 +1,6 @@
 package com.ru.tgra.lab1;
 
-
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.*;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -62,7 +62,7 @@ public class Lab1Game extends ApplicationAdapter {
 		floor = false;
 		gameOver = false;
 		
-		theBall = new Ball(new Point2D(300.0f, 300.0f));
+		theBall = new Ball(new Point2D(300.0f, 300.0f), 100.0f);
 		//boxes.add(theBall);
 		
 		Point2D newPairTwo = new Point2D(position_xb, position_yb);
@@ -132,10 +132,10 @@ public class Lab1Game extends ApplicationAdapter {
 		Gdx.gl.glUniform4f(colorLoc, 0.7f, 0.2f, 0, 1);
 
 		//VERTEX ARRAY IS FILLED HERE
-		float[] array = {-50.0f, -50.0f,
-						-50.0f, 50.0f,
-						50.0f, -50.0f,
-						50.0f, 50.0f};
+		float[] array = {-10.0f, -10.0f,
+						-10.0f, 10.0f,
+						10.0f, -10.0f,
+						10.0f, 10.0f};
 
 		vertexBuffer = BufferUtils.newFloatBuffer(8);
 		vertexBuffer.put(array);
@@ -168,16 +168,16 @@ public class Lab1Game extends ApplicationAdapter {
 */
 		// handle if box 1 touches the edges
 
-		if(theBall.coords.getXFromPair() >= 974) {
+		if(theBall.coords.getXFromPair() >= 1014) {
 			rightWall = true;
 		}
-		if(theBall.coords.getYFromPair() <= 50) {
+		if(theBall.coords.getYFromPair() <= 10) {
 			floor = true;
 		}
-		if(theBall.coords.getXFromPair() <= 50) {
+		if(theBall.coords.getXFromPair() <= 10) {
 			rightWall = false;
 		}
-		if(theBall.coords.getYFromPair() >= 550) {
+		if(theBall.coords.getYFromPair() >= 590) {
 			floor = false;
 		}
 		
@@ -264,8 +264,11 @@ public class Lab1Game extends ApplicationAdapter {
 		}
 		
 		setModelMatrixTranslation(theBall.coords.getXFromPair(), theBall.coords.getYFromPair());
+		/*
 		Gdx.gl.glUniform4f(colorLoc, 0.7f, 0.2f, 0.4f, 1);  // pink
 		Gdx.gl.glDrawArrays(GL20.GL_TRIANGLE_STRIP, 0, 4);	// draw first box
+		*/
+		theBall.draw(colorLoc);
 			
 		int count = 0;
 		/*
