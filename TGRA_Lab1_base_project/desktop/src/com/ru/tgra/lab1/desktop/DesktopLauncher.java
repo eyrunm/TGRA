@@ -10,7 +10,7 @@ public class DesktopLauncher {
 
 		config.title = "AMAZINGLY GREAT APPLICATION!!"; // or whatever you like
 		config.width = 1024;  //experiment with
-		config.height = 768;  //the window size
+		config.height = 600;  //the window size
 
 		new LwjglApplication(new Lab1Game(), config);
 	}

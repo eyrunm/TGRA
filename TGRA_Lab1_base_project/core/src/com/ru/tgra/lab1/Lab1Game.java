@@ -1,15 +1,18 @@
 package com.ru.tgra.lab1;
 
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
-
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 
 import com.badlogic.gdx.utils.BufferUtils;
 
 public class Lab1Game extends ApplicationAdapter {
+	
+	private Ball theBall;
 	
 	private FloatBuffer vertexBuffer;
 
@@ -26,43 +29,45 @@ public class Lab1Game extends ApplicationAdapter {
 	private int projectionMatrixLoc;
 
 	private int colorLoc;
-	
+	/*
 	private float position_x;
 	private float position_y;
+	*/
+	private float position_xb;
+	private float position_yb;
+	private float position_xc;
+	private float position_yc;
 	
-	private float posX;
-	private float posY;
+	ArrayList<Point2D> boxes;
 	
-	private int speedX;
-	private int speedY;
+	private boolean rightWall;
+	private boolean floor;
+	private boolean gameOver;
 	
-	private int height = 768;
-	private int width = 1024;
-	
-	private float clickX;
-	private float clickY;
-	
-	private float xList[] = new float[100];
-	private float yList[] = new float[100];
-
-	private int count;
-	
-
 	@Override
 	public void create () {
 
 		String vertexShaderString;
 		String fragmentShaderString;
+		
+		boxes = new ArrayList<Point2D>();
+		/*
 		position_x = 300;
 		position_y = 300;
-		posX = 600;
-		posY = 360;
+		*/
+		position_xb = 400;
+		position_yb = 500;
 		
-		clickX = -50;
-		clickY = -50;
-		count = 0;
-		speedX = 3;
-		speedY = 2;
+		rightWall = false;
+		floor = false;
+		gameOver = false;
+		
+		theBall = new Ball(new Point2D(300.0f, 300.0f));
+		//boxes.add(theBall);
+		
+		Point2D newPairTwo = new Point2D(position_xb, position_yb);
+		boxes.add(newPairTwo);
+		
 
 		vertexShaderString = Gdx.files.internal("shaders/simple2D.vert").readString();
 		fragmentShaderString =  Gdx.files.internal("shaders/simple2D.frag").readString();
@@ -118,10 +123,13 @@ public class Lab1Game extends ApplicationAdapter {
 		modelMatrix.rewind();
 
 		Gdx.gl.glUniformMatrix4fv(modelMatrixLoc, 1, false, modelMatrix);
+		
+		// the window
+		Gdx.gl.glClearColor(0.4f, 0.6f, 1.0f, 1.0f);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		//COLOR IS SET HERE
 		Gdx.gl.glUniform4f(colorLoc, 0.7f, 0.2f, 0, 1);
-
 
 		//VERTEX ARRAY IS FILLED HERE
 		float[] array = {-50.0f, -50.0f,
@@ -132,121 +140,169 @@ public class Lab1Game extends ApplicationAdapter {
 		vertexBuffer = BufferUtils.newFloatBuffer(8);
 		vertexBuffer.put(array);
 		vertexBuffer.rewind();
+		
+		// where to point
+		Gdx.gl.glVertexAttribPointer(positionLoc, 2, GL20.GL_FLOAT, false, 0, vertexBuffer);
 	}
 	
 	private void update()
 	{
-		if(Gdx.input.justTouched())
-		{	//do mouse/touch input stuff
-			clickX = Gdx.input.getX();    
-			clickY = height - Gdx.input.getY();	
-			
-			xList[count] = clickX;
-			yList[count] = clickY;
-			
-			count++;
+		//Point2D newCoords = new Point2D(position_x, position_y);
+		//Point2D<Float,Float> newCoordsB = new Point2D<Float,Float>(position_xb, position_yb);
+		/*
+		if(Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+			float y = theBall.coords.getYFromPair();
+			theBall.coords.setYInPair(y += 6);
+			boxes.set(0, newCoords);
 		}
+		
+		// creates a new box
+		if(Gdx.input.justTouched())
+		{
+			//do mouse/touch input stuff
+			position_xc = Gdx.input.getX();
+			position_yc = (Gdx.graphics.getHeight() - Gdx.input.getY());
+			Point2D<Float,Float> newPair = new Point2D<Float,Float>(position_xc, position_yc);
+			boxes.add(newPair);
+		}
+*/
+		// handle if box 1 touches the edges
 
-		//do all updates to the game
+		if(theBall.coords.getXFromPair() >= 974) {
+			rightWall = true;
+		}
+		if(theBall.coords.getYFromPair() <= 50) {
+			floor = true;
+		}
+		if(theBall.coords.getXFromPair() <= 50) {
+			rightWall = false;
+		}
+		if(theBall.coords.getYFromPair() >= 550) {
+			floor = false;
+		}
+		
+		if(rightWall) {
+			float x = theBall.coords.getXFromPair();
+			x -= 2;
+			theBall.coords.setXInPair(x);
+			//boxes.set(0, newCoords);
+		}
+		else {
+			float x = theBall.coords.getXFromPair();
+			x += 2;
+			theBall.coords.setXInPair(x);
+			//boxes.set(0, newCoords);
+		}
+		
+		if(floor) {
+			float y = theBall.coords.getYFromPair();
+			y += 2;
+			theBall.coords.setYInPair(y);
+			//boxes.set(0, newCoords);
+		}
+		else {
+			float y = theBall.coords.getYFromPair();
+			y -= 2;
+			theBall.coords.setYInPair(y);
+			//boxes.set(0, newCoords);
+		}
+		/*
+		
+		// moving box no.2
+		if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+			position_xb -= 2;
+			boxes.set(1, newCoordsB);
+		}
+		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+			position_xb += 2;
+			boxes.set(1, newCoordsB);
+		}
+		if(Gdx.input.isKeyPressed(Input.Keys.UP)) {
+			position_yb += 2;
+			boxes.set(1, newCoordsB);
+		}
+		if(Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+			position_yb -= 2;
+			boxes.set(1, newCoordsB);
+		}
+		
+		// handling edges in box 2, turn red and go to corner ( GAME OVER! )
+		if(position_xb >= 750 || position_xb <= 50 || position_yb >= 550 || position_yb <= 50) {
+			position_xb = 50;
+			position_yb = 50;
+			boxes.set(1, newCoordsB);
+			gameOver = true;
+			
+		}
+		*/
+		
+		
 	}
 	
 	private void display()
 	{
-		//do all actual drawing and rendering here
+		// make the window change color each time box 1 hits the edges
+		if(floor) {
+			if(rightWall) {
+				Gdx.gl.glClearColor(0.9f, 0.1f, 0.0f, 1.0f); // RED
+				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			}
+			else {
+				Gdx.gl.glClearColor(0.0f, 0.0f, 1.0f, 1.0f); // deep blue
+				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			}
+		}
+		if(!floor) {
+			if(rightWall) {
+				Gdx.gl.glClearColor(0.6f, 0.9f, 0.2f, 1.0f); // green
+				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			}
+			else {
+				Gdx.gl.glClearColor(0.4f, 0.6f, 1.0f, 1.0f); // light blue
+				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			}
+		}
+		
+		setModelMatrixTranslation(theBall.coords.getXFromPair(), theBall.coords.getYFromPair());
+		Gdx.gl.glUniform4f(colorLoc, 0.7f, 0.2f, 0.4f, 1);  // pink
+		Gdx.gl.glDrawArrays(GL20.GL_TRIANGLE_STRIP, 0, 4);	// draw first box
+			
+		int count = 0;
+		/*
+		for(Point2D b : boxes) { // go through all boxes created
+			if(count == 0) {	// first box
+				setModelMatrixTranslation(b.getXFromPair(), b.getYFromPair());
+				Gdx.gl.glUniform4f(colorLoc, 0.7f, 0.2f, 0.4f, 1);  // pink
+				Gdx.gl.glDrawArrays(GL20.GL_TRIANGLE_STRIP, 0, 4);	// draw first box
+			}
+			if(count == 1) {	// second box
+				setModelMatrixTranslation(b.getXFromPair(), b.getYFromPair());
+				Gdx.gl.glUniform4f(colorLoc, 0.1f, 0.6f, 0.1f, 1); // green
+				
+				if(gameOver) {
+					Gdx.gl.glUniform4f(colorLoc, 1.0f, 0.0f, 0, 1);	// red if game over
+				}
+
+				Gdx.gl.glDrawArrays(GL20.GL_TRIANGLE_STRIP, 0, 4);	//draw second box
+			}
+			else if(count > 1) { // all the other boxes
+				setModelMatrixTranslation(b.getXFromPair(), b.getYFromPair());
+				Gdx.gl.glUniform4f(colorLoc, 0.4f, 0.0f, 0.3f, 1); // purple
+				Gdx.gl.glDrawArrays(GL20.GL_TRIANGLE_STRIP, 0, 4); // draw the rest in purple
+			}
+			count++;
+		}
+		*/
+
 	}
 
 	@Override
 	public void render () {
 		
 		//put the code inside the update and display methods, depending on the nature of the code
-		
 		update();
 		display();
-		
-		Gdx.gl.glClearColor(0.4f, 0.6f, 1.0f, 1.0f);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
-		
-		//Draw a triangle
-		Gdx.gl.glUniform4f(colorLoc, 1f, 1f, 1f, 1f); //the color of the triangle
 
-		vertexBuffer.put(0, 100.0f); //x coordinate 1
-		vertexBuffer.put(1, 100.0f); //y coordinate 1
-		vertexBuffer.put(2, 150.0f); //x coordinate 2
-		vertexBuffer.put(3, 200.0f); //y coordinate 2
-		vertexBuffer.put(4, 200.0f); //x coordinate 3
-		vertexBuffer.put(5, 100.0f); //y coordinate 3
-			//display the triangle
-		Gdx.gl.glVertexAttribPointer(positionLoc, 2, GL20.GL_FLOAT, false, 0, vertexBuffer);
-		Gdx.gl.glDrawArrays(GL20.GL_TRIANGLES, 0, 3);
-		//ends here
-		
-		Gdx.gl.glUniform4f(colorLoc, 0.1f, 0.1f, 0.f, 1);
-		// draw a smaller square
-			vertexBuffer.put(0, posX - 30.0f); //x coordinate 1
-			vertexBuffer.put(1, posY - 30.0f); //y coordinate 1
-			vertexBuffer.put(2, posX - 30.0f); //x coordinate 2
-			vertexBuffer.put(3, posY + 30.0f); //y coordinate 2
-			vertexBuffer.put(4, posX + 30.0f); //x coordinate 3
-			vertexBuffer.put(5, posY - 30.0f); //y coordinate 3
-			vertexBuffer.put(6, posX + 30.0f); //x coordinate 4
-			vertexBuffer.put(7, posY + 30.0f); //y coordinate 4
-			//display the square
-			Gdx.gl.glVertexAttribPointer(positionLoc, 2, GL20.GL_FLOAT, false, 0, vertexBuffer);
-			Gdx.gl.glDrawArrays(GL20.GL_TRIANGLE_STRIP, 0, 4);
-				
-			if(Gdx.input.isKeyPressed(Input.Keys.LEFT)&& posX - 30.0f >= 0) {
-				posX -= 5;
-			}
-			if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)&& posX + 30.0f <= width) {
-				posX += 5;
-			}
-			if(Gdx.input.isKeyPressed(Input.Keys.UP) && posY + 30.0f <= height) {
-				posY += 5;
-			}
-			if(Gdx.input.isKeyPressed(Input.Keys.DOWN) && posY - 30.0f >= 0) {
-				posY -= 5;
-			}	
-			
-			Gdx.gl.glUniform4f(colorLoc, 0.6f, 0.3f, 1f, 1);
-			for(int i = 0; i < count; i++)
-			{	//draw the click squares
-				vertexBuffer.put(0, xList[i] - 60.0f); //x coordinate 1
-				vertexBuffer.put(1, yList[i] - 60.0f); //y coordinate 1
-				vertexBuffer.put(2, xList[i] - 60.0f); //x coordinate 2
-				vertexBuffer.put(3, yList[i] + 60.0f); //y coordinate 2
-				vertexBuffer.put(4, xList[i] + 60.0f); //x coordinate 3
-				vertexBuffer.put(5, yList[i] - 60.0f); //y coordinate 3
-				vertexBuffer.put(6, xList[i] + 60.0f); //x coordinate 4
-				vertexBuffer.put(7, yList[i] + 60.0f); //y coordinate 4
-				//display the square
-				Gdx.gl.glVertexAttribPointer(positionLoc, 2, GL20.GL_FLOAT, false, 0, vertexBuffer);
-				Gdx.gl.glDrawArrays(GL20.GL_TRIANGLE_STRIP, 0, 4);
-			}
-			
-			Gdx.gl.glUniform4f(colorLoc, 1f, 0.5f, 0.5f, 0.5f);
-			// draw a square
-			vertexBuffer.put(0, position_x - 50.0f); //x coordinate 1
-			vertexBuffer.put(1, position_y - 50.0f); //y coordinate 1
-			vertexBuffer.put(2, position_x - 50.0f); //x coordinate 2
-			vertexBuffer.put(3, position_y + 50.0f); //y coordinate 2
-			vertexBuffer.put(4, position_x + 50.0f); //x coordinate 3
-			vertexBuffer.put(5, position_y - 50.0f); //y coordinate 3
-			vertexBuffer.put(6, position_x + 50.0f); //x coordinate 4
-			vertexBuffer.put(7, position_y + 50.0f); //y coordinate 4
-				//display the square
-			Gdx.gl.glVertexAttribPointer(positionLoc, 2, GL20.GL_FLOAT, false, 0, vertexBuffer);
-			Gdx.gl.glDrawArrays(GL20.GL_TRIANGLE_STRIP, 0, 4);
-		
-			position_x += speedX;
-			position_y += speedY;
-			
-			if(position_x + 50.0f > width || position_x - 50.0f < 0 ) {
-				speedX = -speedX;
-			}
-			if(position_y + 50.0f > height || position_y - 50.0f < 0) {
-				speedY = -speedY;
-			}
 	}
 
 
