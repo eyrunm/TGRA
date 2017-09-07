@@ -51,19 +51,10 @@ public class Lab1Game extends ApplicationAdapter {
 		String fragmentShaderString;
 		/*
 		boxes = new ArrayList<Point2D>();
-		
-		position_x = 300;
-		position_y = 300;
-		
-		position_xb = 400;
-		position_yb = 500;
 		*/
 		rightWall = false;
 		floor = false;
 		gameOver = false;
-		
-		//theBall = new Ball(new Point2D(300.0f, 300.0f), 100.0f);
-		//boxes.add(theBall);
 		
 		//Point2D newPairTwo = new Point2D(position_xb, position_yb);
 		//boxes.add(newPairTwo);
@@ -222,12 +213,6 @@ public class Lab1Game extends ApplicationAdapter {
 
 		
 		//setModelMatrixTranslation(theBall.getXFromPair(), theBall.getYFromPair());
-		
-		/*
-		Gdx.gl.glUniform4f(colorLoc, 0.7f, 0.2f, 0.4f, 1);  // pink
-		Gdx.gl.glDrawArrays(GL20.GL_TRIANGLE_STRIP, 0, 4);	// draw first box
-		*/
-		//theBall.draw();
 			
 		int count = 0;
 		/*
@@ -259,12 +244,10 @@ public class Lab1Game extends ApplicationAdapter {
 	}
 
 	@Override
-	public void render () {
-		
+	public void render () {		
 		//put the code inside the update and display methods, depending on the nature of the code
 		update();
 		display();
-
 	}
 
 
