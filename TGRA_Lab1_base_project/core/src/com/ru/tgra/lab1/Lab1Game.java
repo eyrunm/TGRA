@@ -31,13 +31,7 @@ public class Lab1Game extends ApplicationAdapter {
 	// Hlutur á hnit. Munum láta hann teikna sig eins og hring.
 	Point2D theBall = new Point2D(0,0);
 	Point2D theBar = new Point2D(612, 15);
-	
-	/*
-	private float position_xb;
-	private float position_yb;
-	private float position_xc;
-	private float position_yc;
-	*/
+
 	ArrayList<Point2D> boxes;
 	
 	public boolean rightWall;
@@ -55,11 +49,7 @@ public class Lab1Game extends ApplicationAdapter {
 		*/
 		rightWall = false;
 		floor = false;
-		gameOver = false;
-		
-		//Point2D newPairTwo = new Point2D(position_xb, position_yb);
-		//boxes.add(newPairTwo);
-		
+		gameOver = false;	
 
 		vertexShaderString = Gdx.files.internal("shaders/simple2D.vert").readString();
 		fragmentShaderString =  Gdx.files.internal("shaders/simple2D.frag").readString();
@@ -118,30 +108,15 @@ public class Lab1Game extends ApplicationAdapter {
 		
 		// the window
 		Gdx.gl.glClearColor(0.4f, 0.6f, 1.0f, 1.0f);
-		//Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		//COLOR IS SET HERE
 		Gdx.gl.glUniform4f(colorLoc, 0.7f, 0.2f, 0, 1);
 
-		//VERTEX ARRAY IS FILLED HERE
-		float[] array = {-10.0f, -10.0f,
-						-10.0f, 10.0f,
-						10.0f, -10.0f,
-						10.0f, 10.0f};
-
-		vertexBuffer = BufferUtils.newFloatBuffer(8);
-		vertexBuffer.put(array);
-		vertexBuffer.rewind();
-		
-		// where to point
-		Gdx.gl.glVertexAttribPointer(positionLoc, 2, GL20.GL_FLOAT, false, 0, vertexBuffer);
 		Ball.create(positionLoc);
 		Bar.create(positionLoc);
 	}
 	
-	private void update()
-	{
-		//Point2D newCoords = new Point2D(position_x, position_y);
+	private void update() {
 
 		// handle if the ball touches the edges
 
@@ -162,38 +137,34 @@ public class Lab1Game extends ApplicationAdapter {
 			float x = theBall.getXFromPair();
 			x -= 2;
 			theBall.setXInPair(x);
-			//boxes.set(0, newCoords);
 		}
 		else {
 			float x = theBall.getXFromPair();
 			x += 2;
 			theBall.setXInPair(x);
-			//boxes.set(0, newCoords);
 		}
 		
 		if(floor) {
 			float y = theBall.getYFromPair();
 			y += 2;
 			theBall.setYInPair(y);
-			//boxes.set(0, newCoords);
 		}
 		else {
 			float y = theBall.getYFromPair();
 			y -= 2;
 			theBall.setYInPair(y);
-			//boxes.set(0, newCoords);
 		}
 		
 		
-		// moving box no.2
+		// moving the bar
 		if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
 			float x = theBar.getXFromPair();
-			x -= 2;
+			x -= 4;
 			theBar.setXInPair(x);
 		}
 		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
 			float y = theBar.getXFromPair();
-			y += 2;
+			y += 4;
 			theBar.setXInPair(y);
 		}
 		
@@ -207,45 +178,26 @@ public class Lab1Game extends ApplicationAdapter {
 		Gdx.gl.glUniform4f(colorLoc, 0.9f, 0.8f, 0, 1);
 		Gdx.gl20.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		
+		// the ball
 		clearModelMatrix();
 		setModelMatrixTranslation(theBall.getXFromPair(), theBall.getYFromPair());
 		setModelMatrixScale(ballSize, ballSize);
 		Gdx.gl.glUniform4f(colorLoc, 0.9f, 0.4f, 0, 1);
 		Ball.draw();
 		
+		// the bar
 		clearModelMatrix();
 		setModelMatrixTranslation(theBar.getXFromPair(), theBar.getYFromPair());
 		setModelMatrixScale(2.0f, 0.4f);
 		Gdx.gl.glUniform4f(colorLoc, 0.9f, 0.4f, 0, 1);
 		Bar.draw();
 
-		
-		//setModelMatrixTranslation(theBall.getXFromPair(), theBall.getYFromPair());
-			
-		int count = 0;
 		/*
-		for(Point2D b : boxes) { // go through all boxes created
-			if(count == 0) {	// first box
-				setModelMatrixTranslation(b.getXFromPair(), b.getYFromPair());
-				Gdx.gl.glUniform4f(colorLoc, 0.7f, 0.2f, 0.4f, 1);  // pink
-				Gdx.gl.glDrawArrays(GL20.GL_TRIANGLE_STRIP, 0, 4);	// draw first box
-			}
-			if(count == 1) {	// second box
-				setModelMatrixTranslation(b.getXFromPair(), b.getYFromPair());
-				Gdx.gl.glUniform4f(colorLoc, 0.1f, 0.6f, 0.1f, 1); // green
-				
-				if(gameOver) {
-					Gdx.gl.glUniform4f(colorLoc, 1.0f, 0.0f, 0, 1);	// red if game over
-				}
-
-				Gdx.gl.glDrawArrays(GL20.GL_TRIANGLE_STRIP, 0, 4);	//draw second box
-			}
-			else if(count > 1) { // all the other boxes
-				setModelMatrixTranslation(b.getXFromPair(), b.getYFromPair());
-				Gdx.gl.glUniform4f(colorLoc, 0.4f, 0.0f, 0.3f, 1); // purple
-				Gdx.gl.glDrawArrays(GL20.GL_TRIANGLE_STRIP, 0, 4); // draw the rest in purple
-			}
-			count++;
+		 // BRICKS
+		for(Point2D b : boxes) {
+			setModelMatrixTranslation(b.getXFromPair(), b.getYFromPair());
+			Gdx.gl.glUniform4f(colorLoc, 0.4f, 0.0f, 0.3f, 1); // purple
+			Gdx.gl.glDrawArrays(GL20.GL_TRIANGLE_STRIP, 0, 4); // draw the rest in purple
 		}
 		*/
 
