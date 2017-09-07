@@ -1,33 +1,39 @@
 package com.ru.tgra.lab1;
 
+import java.nio.FloatBuffer;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.utils.BufferUtils;
 
 public class Ball {
-	public Point2D coords;
-	public float radius;
 	
-	public Ball(Point2D p, float rad) {
-		this.coords = p;
-		this.radius = rad;
-		
-	}
-	
-	public void draw(int colorLoc) {
-		
-		Gdx.gl.glUniform4f(colorLoc, 0.7f, 0.2f, 0.4f, 1);  // pink
-		Gdx.gl.glDrawArrays(GL20.GL_TRIANGLE_FAN, 0, 3);
-		//Gdx.gl.glTranslatef(this.coords.getXFromPair(), this.coords.getYFromPair(), 0);
-		/*
-		Gdx.gl.glPushMatrix();
+	private static FloatBuffer vertexBuffer;
+	private static int vertexPointer;
+	private static int verticesPerCircle = 50;
 
-		Gdx.gl.glTranslatef(this.get_middle().x, this.get_middle().y, 0);
-        
-		Gdx.gl.glScalef(4.0f, 4.0f, 4.0f);
-        Gdx.gl.glDrawArrays(GL20.GL_TRIANGLE_FAN, 4, 40);
-        Gdx.gl.glPopMatrix();
-        */
-        
-        
+	public static void create(int vertexPointer) {
+		Ball.vertexPointer = vertexPointer;
+		float[] array = new float[2 * verticesPerCircle];
+		int index = 0;
+		// VERTEX ARRAY IS FILLED HERE
+		for (float i = 0; i < 2 * Math.PI; i += (2 * Math.PI) / (verticesPerCircle / 2)) {
+			array[index] = (float) (Math.cos(i));
+			index++;
+			array[index] = (float) (Math.sin(i));
+			index++;
+		}
+
+		vertexBuffer = BufferUtils.newFloatBuffer(2 * verticesPerCircle);
+		vertexBuffer.put(array);
+		vertexBuffer.rewind();
+	}
+
+	public static void draw() {
+
+		Gdx.gl.glVertexAttribPointer(vertexPointer, 2, GL20.GL_FLOAT, false, 0, vertexBuffer);
+
+		Gdx.gl.glDrawArrays(GL20.GL_TRIANGLE_FAN, 0, verticesPerCircle);
+
 	}
 }
