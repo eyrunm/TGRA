@@ -29,7 +29,7 @@ public class Lab1Game extends ApplicationAdapter {
 	private int colorLoc;
 
 	// Hlutur á hnit. Munum láta hann teikna sig eins og hring.
-	Point2D theBall = new Point2D(0,0);
+	Point2D theBall = new Point2D(50,50);
 	Point2D theBar = new Point2D(612, 15);
 
 	ArrayList<Point2D> boxes;
@@ -119,11 +119,15 @@ public class Lab1Game extends ApplicationAdapter {
 	private void update() {
 
 		// handle if the ball touches the edges
+		if(theBall.getYFromPair() <= 10) {
+			gameOver = true;
+		}
 
 		if(theBall.getXFromPair() >= 1014) {
 			rightWall = true;
 		}
-		if(theBall.getYFromPair() <= 10) {
+		if(theBall.getYFromPair() <= 30 && theBall.getXFromPair() <= theBar.getXFromPair()+40 
+											&& theBall.getXFromPair() >= theBar.getXFromPair()-40) {
 			floor = true;
 		}
 		if(theBall.getXFromPair() <= 10) {
