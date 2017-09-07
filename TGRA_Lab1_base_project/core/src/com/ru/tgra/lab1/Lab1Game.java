@@ -30,6 +30,7 @@ public class Lab1Game extends ApplicationAdapter {
 
 	// Hlutur á hnit. Munum láta hann teikna sig eins og hring.
 	Point2D theBall = new Point2D(0,0);
+	Point2D theBar = new Point2D(612, 15);
 	
 	/*
 	private float position_xb;
@@ -144,6 +145,7 @@ public class Lab1Game extends ApplicationAdapter {
 		// where to point
 		Gdx.gl.glVertexAttribPointer(positionLoc, 2, GL20.GL_FLOAT, false, 0, vertexBuffer);
 		Ball.create(positionLoc);
+		Bar.create(positionLoc);
 	}
 	
 	private void update()
@@ -190,19 +192,19 @@ public class Lab1Game extends ApplicationAdapter {
 			theBall.setYInPair(y);
 			//boxes.set(0, newCoords);
 		}
-		/*
+		
 		
 		// moving box no.2
 		if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-			position_xb -= 2;
-			boxes.set(1, newCoordsB);
+			float x = theBar.getXFromPair();
+			x -= 2;
+			theBar.setXInPair(x);
 		}
 		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-			position_xb += 2;
-			boxes.set(1, newCoordsB);
+			float y = theBar.getXFromPair();
+			y += 2;
+			theBar.setXInPair(y);
 		}
-
-		*/
 		
 		
 	}
@@ -219,6 +221,12 @@ public class Lab1Game extends ApplicationAdapter {
 		setModelMatrixScale(ballSize, ballSize);
 		Gdx.gl.glUniform4f(colorLoc, 0.9f, 0.4f, 0, 1);
 		Ball.draw();
+		
+		clearModelMatrix();
+		setModelMatrixTranslation(theBar.getXFromPair(), theBar.getYFromPair());
+		setModelMatrixScale(2.0f, 0.4f);
+		Gdx.gl.glUniform4f(colorLoc, 0.9f, 0.4f, 0, 1);
+		Bar.draw();
 
 		
 		//setModelMatrixTranslation(theBall.getXFromPair(), theBall.getYFromPair());
