@@ -155,6 +155,14 @@ public class Lab1Game extends ApplicationAdapter {
 			theBall.setYInPair(y);
 		}
 		
+		// handle if the bar touches the edges
+		if(theBar.getXFromPair() >= 981) {
+			theBar.setXInPair(982);
+		}
+
+		if(theBar.getXFromPair() <= 46) {
+			theBar.setXInPair(45);
+		}
 		
 		// moving the bar
 		if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
