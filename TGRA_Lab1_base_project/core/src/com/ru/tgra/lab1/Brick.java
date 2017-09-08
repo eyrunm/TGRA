@@ -6,16 +6,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.BufferUtils;
 
-public class Bar {
-	
-	public Point2D coords;
+public class Brick {
+public Point2D coords;
 	
 	private static FloatBuffer vertexBuffer;
 	private static int vertexPointer;
 	
 	public static void create(int vertexPointer) {
 		
-		Bar.vertexPointer = vertexPointer;
+		Brick.vertexPointer = vertexPointer;
 		//VERTEX ARRAY IS FILLED HERE
 		float[] array = {-0.5f, -0.5f,
 						-0.5f, 0.5f,

@@ -29,15 +29,17 @@ public class Lab1Game extends ApplicationAdapter {
 	private int colorLoc;
 
 	// Hlutur á hnit. Munum láta hann teikna sig eins og hring.
-	Point2D theBall = new Point2D(50,50);
-	Point2D theBar = new Point2D(612, 15);
+	Point2D theBall = new Point2D(500,400);
+	Point2D theBar = new Point2D(612, 10);
 
 	ArrayList<Point2D> boxes;
 	
 	public boolean rightWall;
 	private boolean floor;
 	private boolean gameOver;
-	private int ballSize = 20;
+	private int ballSize = 10;
+	private float barWidth = 80.0f;
+	private float barHeight = 10.0f;
 	
 	@Override
 	public void create () {
@@ -126,8 +128,11 @@ public class Lab1Game extends ApplicationAdapter {
 		if(theBall.getXFromPair() >= 1014) {
 			rightWall = true;
 		}
-		if(theBall.getYFromPair() <= 30 && theBall.getXFromPair() <= theBar.getXFromPair()+40 
-											&& theBall.getXFromPair() >= theBar.getXFromPair()-40) {
+		//ball radius is 10 and bar width is 80. 
+		// Not enough for the edges of the ball touch bar, the ball should not bounce.
+		if(theBall.getYFromPair() <= 30 && theBall.getYFromPair() > 10
+				&& theBall.getXFromPair() <= theBar.getXFromPair()+40-10 
+				&& theBall.getXFromPair() >= theBar.getXFromPair()-40+10) {
 			floor = true;
 		}
 		if(theBall.getXFromPair() <= 10) {
@@ -200,7 +205,7 @@ public class Lab1Game extends ApplicationAdapter {
 		// the bar
 		clearModelMatrix();
 		setModelMatrixTranslation(theBar.getXFromPair(), theBar.getYFromPair());
-		setModelMatrixScale(2.0f, 0.4f);
+		setModelMatrixScale(barWidth, barHeight);
 		Gdx.gl.glUniform4f(colorLoc, 0.9f, 0.4f, 0, 1);
 		Bar.draw();
 
