@@ -27,15 +27,27 @@ public class Lab1Game extends ApplicationAdapter {
 	private int projectionMatrixLoc;
 
 	private int colorLoc;
+	
+	private int worldWidth = 1024;
+	private int worldHeight = 600;
 
-	// Hlutur á hnit. Munum láta hann teikna sig eins og hring.
-	Point2D theBall = new Point2D(500,400);
-	Point2D theBar = new Point2D(612, 10);
+	// Object with coordinates. Will draw itself circle style.
+	Point2D theBall = new Point2D(300.0f,400.0f);
+	// Object with coordinates. Will draw itself rectangle style.
+	Point2D theBar = new Point2D(worldWidth/2, 10.0f);
 
 	ArrayList<Point2D> boxes;
 	
+	// Movement of the ball should be along the vector. Changes of direction
+	// are retrieved by manipulating this vector and changes of position are retrieved by
+	// using it : [ positionX + deltaTime * speedX ]
+	Vector2D speed = new Vector2D(150.0f, 150.0f);
+	
+	// a variable used to scale movements between computers/graphic cards so they will feel the same.
+	private float deltaTime;
+	
 	public boolean rightWall;
-	private boolean floor;
+	private boolean barHit;
 	private boolean gameOver;
 	private int ballSize = 10;
 	private float barWidth = 80.0f;
@@ -50,7 +62,7 @@ public class Lab1Game extends ApplicationAdapter {
 		boxes = new ArrayList<Point2D>();
 		*/
 		rightWall = false;
-		floor = false;
+		barHit = false;
 		gameOver = false;	
 
 		vertexShaderString = Gdx.files.internal("shaders/simple2D.vert").readString();
@@ -119,70 +131,68 @@ public class Lab1Game extends ApplicationAdapter {
 	}
 	
 	private void update() {
+		
+		// NOTE the bar has a vector, either (1,0) if going right or (-1,0) for left
+		
+		deltaTime = Gdx.graphics.getDeltaTime();
 
 		// handle if the ball touches the edges
-		if(theBall.getYFromPair() <= 10) {
+		if(theBall.getY() <= ballSize) {
 			gameOver = true;
 		}
 
-		if(theBall.getXFromPair() >= 1014) {
+		if(theBall.getX() >= worldWidth - ballSize) {
 			rightWall = true;
 		}
-		//ball radius is 10 and bar width is 80. 
+		// Ball radius is 10 and bar width is 80. 
 		// Not enough for the edges of the ball touch bar, the ball should not bounce.
-		if(theBall.getYFromPair() <= 30 && theBall.getYFromPair() > 10
-				&& theBall.getXFromPair() <= theBar.getXFromPair()+40-10 
-				&& theBall.getXFromPair() >= theBar.getXFromPair()-40+10) {
-			floor = true;
+		if(theBall.getY() <= 30 && theBall.getY() > ballSize
+				&& theBall.getX() <= theBar.getX()+40-10 
+				&& theBall.getX() >= theBar.getX()-40+10) {
+			barHit = true;
 		}
-		if(theBall.getXFromPair() <= 10) {
+		if(theBall.getX() <= 10) {
 			rightWall = false;
 		}
-		if(theBall.getYFromPair() >= 590) {
-			floor = false;
+		if(theBall.getY() >= 590) {
+			barHit = false;
 		}
 		
 		if(rightWall) {
-			float x = theBall.getXFromPair();
-			x -= 2;
-			theBall.setXInPair(x);
+			float x = theBall.getX() - deltaTime * speed.x;
+			theBall.setX(x);
 		}
 		else {
-			float x = theBall.getXFromPair();
-			x += 2;
-			theBall.setXInPair(x);
+			float x = theBall.getX() + deltaTime * speed.x;
+			theBall.setX(x);
 		}
 		
-		if(floor) {
-			float y = theBall.getYFromPair();
-			y += 2;
-			theBall.setYInPair(y);
+		if(barHit) {
+			float y = theBall.getY() + deltaTime * speed.y;
+			theBall.setY(y);
 		}
 		else {
-			float y = theBall.getYFromPair();
-			y -= 2;
-			theBall.setYInPair(y);
+			float y = theBall.getY() - deltaTime * speed.y;
+			theBall.setY(y);
 		}
 		
 		// handle if the bar touches the edges
-		if(theBar.getXFromPair() >= 981) {
-			theBar.setXInPair(982);
+		if(theBar.getX() >= 981) {
+			theBar.setX(982);
 		}
 
-		if(theBar.getXFromPair() <= 46) {
-			theBar.setXInPair(45);
+		if(theBar.getX() <= 46) {
+			theBar.setX(45);
 		}
 		
 		// moving the bar
 		if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-			float x = theBar.getXFromPair();
-			x -= 4;
-			theBar.setXInPair(x);
+			float x = theBar.getX() - deltaTime * 400;
+			theBar.setX(x);
 		}
 		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-			float y = theBar.getXFromPair();
-			y += 4;
-			theBar.setXInPair(y);
+			float x = theBar.getX() + deltaTime * 400;
+			theBar.setX(x);
 		}
 		
 		
@@ -197,14 +207,14 @@ public class Lab1Game extends ApplicationAdapter {
 		
 		// the ball
 		clearModelMatrix();
-		setModelMatrixTranslation(theBall.getXFromPair(), theBall.getYFromPair());
+		setModelMatrixTranslation(theBall.getX(), theBall.getY());
 		setModelMatrixScale(ballSize, ballSize);
 		Gdx.gl.glUniform4f(colorLoc, 0.9f, 0.4f, 0, 1);
 		Ball.draw();
 		
 		// the bar
 		clearModelMatrix();
-		setModelMatrixTranslation(theBar.getXFromPair(), theBar.getYFromPair());
+		setModelMatrixTranslation(theBar.getX(), theBar.getY());
 		setModelMatrixScale(barWidth, barHeight);
 		Gdx.gl.glUniform4f(colorLoc, 0.9f, 0.4f, 0, 1);
 		Bar.draw();

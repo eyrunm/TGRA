@@ -7,8 +7,8 @@ public class Point2D {
         this.x = x;
         this.y = y;
     }
-    public float getXFromPair(){ return x; }
-    public float getYFromPair(){ return y; }
-    public void setXInPair(float x){ this.x = x; }
-    public void setYInPair(float y){ this.y = y; }
+    public float getX(){ return x; }
+    public float getY(){ return y; }
+    public void setX(float x){ this.x = x; }
+    public void setY(float y){ this.y = y; }
 }
