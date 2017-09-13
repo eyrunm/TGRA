@@ -48,6 +48,7 @@ public class Lab1Game extends ApplicationAdapter {
 	
 	public boolean rightWall;
 	private boolean barHit;
+	private boolean barCollision;
 	private boolean gameOver;
 	private int ballSize = 10;
 	private float barWidth = 80.0f;
@@ -64,6 +65,7 @@ public class Lab1Game extends ApplicationAdapter {
 		rightWall = false;
 		barHit = false;
 		gameOver = false;	
+		barCollision = true;
 
 		vertexShaderString = Gdx.files.internal("shaders/simple2D.vert").readString();
 		fragmentShaderString =  Gdx.files.internal("shaders/simple2D.frag").readString();
@@ -132,10 +134,6 @@ public class Lab1Game extends ApplicationAdapter {
 	
 	private void update() {
 		
-		// NOTE the bar has a vector, either (1,0) if going right or (-1,0) for left
-		// When it hits the paddle the position on the paddle (and the angle the ball is travelling at 
-		// before the bounce?) should control the angle the ball travels at after the bounce.
-		
 		deltaTime = Gdx.graphics.getDeltaTime();
 
 		// handle if the ball touches the edges
@@ -148,15 +146,17 @@ public class Lab1Game extends ApplicationAdapter {
 		}
 		// Ball radius is 10 and bar width is 80. 
 		// Not enough for the edges of the ball touch bar, the ball should not bounce.
-		if(theBall.getY() <= 30 && theBall.getY() > ballSize
-				&& theBall.getX() <= theBar.getX()+40-10 
-				&& theBall.getX() >= theBar.getX()-40+10) {
+		if(theBall.getY() <= 20 && theBall.getY() > ballSize
+				&& theBall.getX() <= theBar.getX()+40 
+				&& theBall.getX() >= theBar.getX()-40) {
 			barHit = true;
+			barCollision = true;
 		}
 		if(theBall.getX() <= ballSize) {
 			rightWall = false;
+			System.out.println("ball has touched the left side!");
 		}
-		if(theBall.getY() >= worldHeight - ballSize) {
+		if(theBall.getY() >= worldHeight - ballSize) {		
 			barHit = false;
 		}
 		
@@ -165,11 +165,34 @@ public class Lab1Game extends ApplicationAdapter {
 			theBall.setX(x);
 		}
 		else {
-			float x = theBall.getX() + deltaTime * speed.x;
+			System.out.println("x pos before: " + theBall.getX());
+			float x = theBall.getX() + deltaTime * speed.x * -1;
+			System.out.println("x pos after" + x);
 			theBall.setX(x);
 		}
 		
 		if(barHit) {
+			if(barCollision) {
+				// When the ball hits the bar the position on the paddle (and the angle the ball is traveling at 
+				// before the bounce?) should control the angle the ball travels at after the bounce.
+				// Find the ball's overall speed, pythagorean theorem. 
+				// Use this value  to keep speedY proportional to speedX
+		    	double speedXY = Math.sqrt(speed.x*speed.x + speed.y*speed.y);
+				
+				// find the position of the ball relative to the center of the bar (-1 to 1)
+				float newPosX = ((theBall.getX() - theBar.getX()) / (barWidth/2));
+				System.out.println("Hits the bar at: "+ newPosX);
+				System.out.println(newPosX);
+				System.out.println("Speed.x before is: "+speed.x);
+				// find the direction X value using newPosX and some float indicating effect percentage.
+				speed.x = (float) (speedXY * newPosX * 0.9);
+				System.out.println("Speed.x after is: "+speed.x);
+				
+				// update speedY to keep the overall speed the same.
+				speed.y = (float) (Math.sqrt(speedXY*speedXY - speed.x*speed.x));
+				System.out.println("Speed.y is: "+speed.y);
+				barCollision = false;
+			}
 			float y = theBall.getY() + deltaTime * speed.y;
 			theBall.setY(y);
 		}
