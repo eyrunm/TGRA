@@ -7,5 +7,10 @@ public class Vector2D {
 		this.x =x;
 		this.y=y;
 	}
+	
+	public float dotProduct (Vector2D v1,Vector2D v2) {
+
+		return (v1.x*v2.x)+(v1.y*v2.y);
+	}
 
 }

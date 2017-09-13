@@ -36,7 +36,7 @@ public class Lab1Game extends ApplicationAdapter {
 	// Object with coordinates. Will draw itself rectangle style.
 	Point2D theBar = new Point2D(worldWidth/2, 10.0f);
 
-	ArrayList<Point2D> boxes;
+	public static ArrayList<Point2D> boxes;
 	
 	// Movement of the ball should be along the vector. Changes of direction
 	// are retrieved by manipulating this vector and changes of position are retrieved by
@@ -58,9 +58,9 @@ public class Lab1Game extends ApplicationAdapter {
 
 		String vertexShaderString;
 		String fragmentShaderString;
-		/*
+		
 		boxes = new ArrayList<Point2D>();
-		*/
+		
 		rightWall = false;
 		barHit = false;
 		gameOver = false;	
@@ -133,6 +133,8 @@ public class Lab1Game extends ApplicationAdapter {
 	private void update() {
 		
 		// NOTE the bar has a vector, either (1,0) if going right or (-1,0) for left
+		// When it hits the paddle the position on the paddle (and the angle the ball is travelling at 
+		// before the bounce?) should control the angle the ball travels at after the bounce.
 		
 		deltaTime = Gdx.graphics.getDeltaTime();
 
@@ -151,10 +153,10 @@ public class Lab1Game extends ApplicationAdapter {
 				&& theBall.getX() >= theBar.getX()-40+10) {
 			barHit = true;
 		}
-		if(theBall.getX() <= 10) {
+		if(theBall.getX() <= ballSize) {
 			rightWall = false;
 		}
-		if(theBall.getY() >= 590) {
+		if(theBall.getY() >= worldHeight - ballSize) {
 			barHit = false;
 		}
 		
