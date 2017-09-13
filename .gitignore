@@ -4,6 +4,7 @@
 .settings/
 /bin
 /target
+.recommenders
 
 # Mac
 .DS_Store
