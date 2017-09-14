@@ -260,40 +260,7 @@ public class Lab1Game extends ApplicationAdapter {
 		
 			
 		if(gameOver) {
-			if(gameOverCounter < 20) {
-				// the window
-				Gdx.gl.glClearColor(0.9f, 0.1f, 0.0f, 1.0f); // RED
-				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-				gameOverCounter++;
-			}
-			if(gameOverCounter >= 20) {
-				// the window
-				Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // BLACK
-				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-				gameOverCounter++;
-			}
-			if(gameOverCounter >= 40) {
-				gameOverCounter = 0;
-				endCounter++;
-			}
-			if(endCounter == 6) {
-				endCounter = 0;
-				gameOver = false;
-				// Object with coordinates. Will draw itself circle style.
-				theBall.setX(300.0f);
-				theBall.setY(400.0f);
-				theBar.setX(worldWidth/2);
-				theBar.setY(10.0f);
-				speed.x = 150.0f;
-				speed.y = 150.0f;
-				rightWall = false;
-				barHit = false;
-				gameOver = false;	
-				barCollision = true;
-				for(Brick b : bricks) {
-					b.isHit = false;
-				}
-			}
+			GameOver();
 		}
 		else {
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -333,6 +300,43 @@ public class Lab1Game extends ApplicationAdapter {
 		//put the code inside the update and display methods, depending on the nature of the code
 		update();
 		display();
+	}
+	
+	private void GameOver() {
+		if(gameOverCounter < 20) {
+			// the window
+			Gdx.gl.glClearColor(0.9f, 0.1f, 0.0f, 1.0f); // RED
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			gameOverCounter++;
+		}
+		if(gameOverCounter >= 20) {
+			// the window
+			Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // BLACK
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			gameOverCounter++;
+		}
+		if(gameOverCounter >= 40) {
+			gameOverCounter = 0;
+			endCounter++;
+		}
+		if(endCounter == 6) {
+			endCounter = 0;
+			gameOver = false;
+			// Object with coordinates. Will draw itself circle style.
+			theBall.setX(300.0f);
+			theBall.setY(400.0f);
+			theBar.setX(worldWidth/2);
+			theBar.setY(10.0f);
+			speed.x = 150.0f;
+			speed.y = 150.0f;
+			rightWall = false;
+			barHit = false;
+			gameOver = false;	
+			barCollision = true;
+			for(Brick b : bricks) {
+				b.isHit = false;
+			}
+		}
 	}
 
 	private void clearModelMatrix()
