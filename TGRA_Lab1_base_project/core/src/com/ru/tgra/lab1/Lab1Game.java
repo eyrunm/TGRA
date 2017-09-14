@@ -133,20 +133,9 @@ public class Lab1Game extends ApplicationAdapter {
 
 		//COLOR IS SET HERE
 		Gdx.gl.glUniform4f(colorLoc, 0.7f, 0.2f, 0, 1);
+				
+		makeBricks();
 		
-		bricks = new ArrayList<Brick>();
-		
-		int w = 85;
-		int h = 565;
-		for(int y = 0; y < 3; y++) {
-			w = 85;
-			for(int x = 0; x < 10; x++) {
-				bricks.add(new Brick(new Point2D(w,h)));
-				w += 95;
-			}
-			h -= 45;
-		}
-
 		Ball.create(positionLoc);
 		Bar.create(positionLoc);
 		Brick.create(positionLoc);
@@ -249,8 +238,7 @@ public class Lab1Game extends ApplicationAdapter {
 
 	private void display() {			
 		if(gameOver) {
-			//gameOver();
-			gameWon();
+			gameOver();
 		}
 		else {
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -357,6 +345,7 @@ public class Lab1Game extends ApplicationAdapter {
 	}
 	
 	private void gameOver() {
+		hideAll();
 		if(gameOverCounter < 20) {
 			// the window
 			Gdx.gl.glClearColor(0.9f, 0.1f, 0.0f, 1.0f); // RED
@@ -375,10 +364,14 @@ public class Lab1Game extends ApplicationAdapter {
 		}
 		if(endCounter == 8) {
 			restartValues();
+			makeBricks();
 		}
 	}
 	
 	private void gameWon() {
+		hideAll();
+		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // BLACK
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		bricks = new ArrayList<Brick>();
 		
 		int w = 125;
@@ -422,22 +415,25 @@ public class Lab1Game extends ApplicationAdapter {
 			gameWonCounter = 0;
 			endCounter++;
 		}
-		if(endCounter == 8) {
-			bricks = new ArrayList<Brick>();
-			w = 85;
-			h = 565;
-			for(int y = 0; y < 3; y++) {
-				w = 85;
-				for(int x = 0; x < 10; x++) {
-					bricks.add(new Brick(new Point2D(w,h)));
-					w += 95;
-				}	h -= 45;
-			}
-			
+		if(endCounter == 12) {
+			makeBricks();
 			restartValues();
 			// the window
 			Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // BLACK
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		}
+	}
+	
+	private void makeBricks() {
+		bricks = new ArrayList<Brick>();
+		int w = 85;
+		int h = 565;
+		for(int y = 0; y < 3; y++) {
+			w = 85;
+			for(int x = 0; x < 10; x++) {
+				bricks.add(new Brick(new Point2D(w,h)));
+				w += 95;
+			}	h -= 45;
 		}
 	}
 
@@ -457,6 +453,19 @@ public class Lab1Game extends ApplicationAdapter {
 		brickHits = 0;
 		for(Brick b : bricks) {
 			b.isHit = false;
+		}
+	}
+	
+	private void hideAll() {
+		speed.x = 0;
+		speed.y = 0;
+		theBall.setX(-10.0f);
+		theBall.setY(-10.0f);
+		theBar.setX(-50.0f);
+		theBar.setY(-50.0f);
+		for(Brick b : bricks) {
+			b.coords.setX(-100.0f);
+			b.coords.setY(-100.0f);
 		}
 	}
 	private void clearModelMatrix()
