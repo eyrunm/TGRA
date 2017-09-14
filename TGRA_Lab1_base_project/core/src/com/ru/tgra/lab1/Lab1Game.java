@@ -36,7 +36,7 @@ public class Lab1Game extends ApplicationAdapter {
 	// Object with coordinates. Will draw itself rectangle style.
 	Point2D theBar = new Point2D(worldWidth/2, 10.0f);
 	//List of objects with coordinates. Will draw themself rectangle style
-	public static ArrayList<Point2D> bricks;
+	public static ArrayList<Brick> bricks;
 	
 	// Movement of the ball should be along the vector. Changes of direction
 	// are retrieved by manipulating this vector and changes of position are retrieved by
@@ -131,14 +131,14 @@ public class Lab1Game extends ApplicationAdapter {
 		//COLOR IS SET HERE
 		Gdx.gl.glUniform4f(colorLoc, 0.7f, 0.2f, 0, 1);
 		
-		bricks = new ArrayList<Point2D>();
+		bricks = new ArrayList<Brick>();
 		
 		int w = 85;
 		int h = 565;
 		for(int y = 0; y < 3; y++) {
 			w = 85;
 			for(int x = 0; x < 10; x++) {
-				bricks.add(new Point2D(w, h));
+				bricks.add(new Brick(new Point2D(w,h)));
 				w += 95;
 			}
 			h -= 45;
@@ -177,11 +177,16 @@ public class Lab1Game extends ApplicationAdapter {
 			barHit = false;
 		}
 		
-		/*for(Point2D b : bricks) {
-			if(theBall.getY() >= b.getY() && theBall.getX() >= b.getX()) {
-				speed.y *= -1;
+		for(int i = bricks.size() -1 ; i >= 0; i--) {
+			if(theBall.getY() >= 430 && theBall.getY() <= bricks.get(i).coords.getY() + 17.5
+					&& theBall.getY() <= bricks.get(i).coords.getY() - 17.5
+					&& theBall.getX() <= bricks.get(i).coords.getX() + 42.5
+					&& theBall.getX() >= bricks.get(i).coords.getX() - 42.5) {
+				// hide the brick thats hit
+				//bricks.get(i).isHit = true;
+				bricks.remove(i);
 			}
-		}*/
+		}
 		
 		if(rightWall) {
 			float s = speed.x;
@@ -300,11 +305,13 @@ public class Lab1Game extends ApplicationAdapter {
 		Bar.draw();
 
 		clearModelMatrix();
-		for(Point2D b : bricks) {
-			setModelMatrixTranslation(b.getX(), b.getY());
-			setModelMatrixScale(brickWidth, brickHeight);
-			Gdx.gl.glUniform4f(colorLoc, 1f, 66/255, 87/255, 255/244);
-			Brick.draw();
+		for(Brick b : bricks) {
+			if(b.isHit == false) {
+				setModelMatrixTranslation(b.coords.getX(), b.coords.getY());
+				setModelMatrixScale(brickWidth, brickHeight);
+				Gdx.gl.glUniform4f(colorLoc, 1f, 66/255, 87/255, 255/244);
+				Brick.draw();
+			}
 		}
 	}
 
