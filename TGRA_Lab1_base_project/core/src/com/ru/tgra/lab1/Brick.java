@@ -10,8 +10,8 @@ public class Brick {
 public Point2D coords;
 	
 	private static FloatBuffer vertexBuffer;
-	private static int vertexPointer;
-	
+	public static int vertexPointer;
+
 	public static void create(int vertexPointer) {
 		
 		Brick.vertexPointer = vertexPointer;
@@ -28,7 +28,6 @@ public Point2D coords;
 	
 	public static void draw() { 
 		Gdx.gl.glVertexAttribPointer(vertexPointer, 2, GL20.GL_FLOAT, false, 0, vertexBuffer);
-
 		Gdx.gl.glDrawArrays(GL20.GL_TRIANGLE_STRIP, 0, 4);
 	}
 }

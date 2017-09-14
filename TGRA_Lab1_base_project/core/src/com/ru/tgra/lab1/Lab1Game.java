@@ -35,8 +35,8 @@ public class Lab1Game extends ApplicationAdapter {
 	Point2D theBall = new Point2D(300.0f,400.0f);
 	// Object with coordinates. Will draw itself rectangle style.
 	Point2D theBar = new Point2D(worldWidth/2, 10.0f);
-
-	public static ArrayList<Point2D> boxes;
+	//List of objects with coordinates. Will draw themself rectangle style
+	public static ArrayList<Point2D> bricks;
 	
 	// Movement of the ball should be along the vector. Changes of direction
 	// are retrieved by manipulating this vector and changes of position are retrieved by
@@ -53,6 +53,8 @@ public class Lab1Game extends ApplicationAdapter {
 	private int ballSize = 10;
 	private float barWidth = 80.0f;
 	private float barHeight = 10.0f;
+	private float brickWidth = 85.0f;
+	private float brickHeight = 35.0f;
 	
 	@Override
 	public void create () {
@@ -60,8 +62,7 @@ public class Lab1Game extends ApplicationAdapter {
 		String vertexShaderString;
 		String fragmentShaderString;
 		
-		boxes = new ArrayList<Point2D>();
-		
+	
 		rightWall = false;
 		barHit = false;
 		gameOver = false;	
@@ -127,9 +128,24 @@ public class Lab1Game extends ApplicationAdapter {
 
 		//COLOR IS SET HERE
 		Gdx.gl.glUniform4f(colorLoc, 0.7f, 0.2f, 0, 1);
+		
+		bricks = new ArrayList<Point2D>();
+		
+		int w = 85;
+		int h = 565;
+		for(int x = 0; x < 10; x++) {
+			bricks.add(new Point2D(w, h));
+			/*for(int y = 0; y < 3; y++) {
+				bricks.add(new Point2D(w, h));
+			}*/
+			w += 95;
+			//h -= 45;
+		}
 
 		Ball.create(positionLoc);
 		Bar.create(positionLoc);
+		Brick.create(positionLoc);
+
 	}
 	
 	private void update() {
@@ -221,7 +237,6 @@ public class Lab1Game extends ApplicationAdapter {
 			theBar.setX(x);
 		}
 		
-		
 	}
 	
 	private void display() {
@@ -245,6 +260,13 @@ public class Lab1Game extends ApplicationAdapter {
 		Gdx.gl.glUniform4f(colorLoc, 0.9f, 0.4f, 0, 1);
 		Bar.draw();
 
+		clearModelMatrix();
+		for(Point2D b : bricks) {
+			setModelMatrixTranslation(b.getX(), b.getY());
+			setModelMatrixScale(brickWidth, brickHeight);
+			Gdx.gl.glUniform4f(colorLoc, 1f, 66/255, 87/255, 255/244);
+			Brick.draw();
+		}
 		/*
 		 // BRICKS
 		for(Point2D b : boxes) {
