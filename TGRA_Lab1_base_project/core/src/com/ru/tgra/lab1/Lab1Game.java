@@ -50,6 +50,7 @@ public class Lab1Game extends ApplicationAdapter {
 	private boolean barHit;
 	private boolean barCollision;
 	private boolean gameOver;
+	private boolean gameWon;
 	private int gameOverCounter = 200;
 	private int endCounter = 0;
 	private int ballSize = 10;
@@ -57,6 +58,7 @@ public class Lab1Game extends ApplicationAdapter {
 	private float barHeight = 10.0f;
 	private float brickWidth = 85.0f;
 	private float brickHeight = 35.0f;
+	public int brickHits = 0;
 	
 	@Override
 	public void create () {
@@ -66,7 +68,8 @@ public class Lab1Game extends ApplicationAdapter {
 	
 		rightWall = false;
 		barHit = false;
-		gameOver = false;	
+		gameOver = false;
+		gameWon = false;
 		barCollision = true;
 
 		vertexShaderString = Gdx.files.internal("shaders/simple2D.vert").readString();
@@ -184,6 +187,7 @@ public class Lab1Game extends ApplicationAdapter {
 					&& theBall.getX()+10 >= bricks.get(i).coords.getX() - 42.5) {
 				// hide the brick thats hit
 				bricks.get(i).isHit = true;
+				brickHits++;
 				//bricks.remove(i);
 				barHit = false;
 				rightWall = false;
@@ -234,6 +238,9 @@ public class Lab1Game extends ApplicationAdapter {
 		}
 
 		// Do stuff when game is won
+		if(brickHits >= 30) {
+			gameWon = true;
+		}
 		
 		// handle if the bar touches the edges
 		if(theBar.getX() >= 980) {
@@ -252,13 +259,10 @@ public class Lab1Game extends ApplicationAdapter {
 		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
 			float x = theBar.getX() + deltaTime * 400;
 			theBar.setX(x);
-		}
-		
+		}	
 	}
 	
-	private void display() {
-		
-			
+	private void display() {			
 		if(gameOver) {
 			if(gameOverCounter < 20) {
 				// the window
