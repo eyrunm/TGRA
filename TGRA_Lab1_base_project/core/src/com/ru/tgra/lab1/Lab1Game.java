@@ -208,27 +208,8 @@ public class Lab1Game extends ApplicationAdapter {
 		}
 		
 		if(barHit) {
-			if(barCollision) {
-				// When the ball hits the bar the position on the paddle (and the angle the ball is traveling at 
-				// before the bounce?) should control the angle the ball travels at after the bounce.
-				// Find the ball's overall speed, pythagorean theorem. 
-				// Use this value  to keep speedY proportional to speedX
-		    	double speedXY = Math.sqrt(speed.x*speed.x + speed.y*speed.y);
+			if(barCollision) handleBar();
 				
-				// find the position of the ball relative to the center of the bar (-1 to 1)
-				float newPosX = ((theBall.getX() - theBar.getX()) / (barWidth/2));
-				System.out.println("Hits the bar at: "+ newPosX);
-				System.out.println(newPosX);
-				System.out.println("Speed.x before is: "+speed.x);
-				// find the direction X value using newPosX and some float indicating effect percentage.
-				speed.x = (float) (speedXY * newPosX * 0.9);
-				System.out.println("Speed.x after is: "+speed.x);
-				
-				// update speedY to keep the overall speed the same.
-				speed.y = (float) (Math.sqrt(speedXY*speedXY - speed.x*speed.x));
-				System.out.println("Speed.y is: "+speed.y);
-				barCollision = false;
-			}
 			float y = theBall.getY() + deltaTime * speed.y;
 			theBall.setY(y);
 		}
@@ -264,7 +245,7 @@ public class Lab1Game extends ApplicationAdapter {
 	
 	private void display() {			
 		if(gameOver) {
-			GameOver();
+			gameOver();
 		}
 		else {
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -306,7 +287,29 @@ public class Lab1Game extends ApplicationAdapter {
 		display();
 	}
 	
-	private void GameOver() {
+	private void handleBar() {
+		// When the ball hits the bar the position on the paddle (and the angle the ball is traveling at 
+		// before the bounce?) should control the angle the ball travels at after the bounce.
+		// Find the ball's overall speed, pythagorean theorem. 
+		// Use this value  to keep speedY proportional to speedX
+    	double speedXY = Math.sqrt(speed.x*speed.x + speed.y*speed.y);
+		
+		// find the position of the ball relative to the center of the bar (-1 to 1)
+		float newPosX = ((theBall.getX() - theBar.getX()) / (barWidth/2));
+		System.out.println("Hits the bar at: "+ newPosX);
+		System.out.println(newPosX);
+		System.out.println("Speed.x before is: "+speed.x);
+		// find the direction X value using newPosX and some float indicating effect percentage.
+		speed.x = (float) (speedXY * newPosX * 0.9);
+		System.out.println("Speed.x after is: "+speed.x);
+		
+		// update speedY to keep the overall speed the same.
+		speed.y = (float) (Math.sqrt(speedXY*speedXY - speed.x*speed.x));
+		System.out.println("Speed.y is: "+speed.y);
+		barCollision = false;
+	}
+	
+	private void gameOver() {
 		if(gameOverCounter < 20) {
 			// the window
 			Gdx.gl.glClearColor(0.9f, 0.1f, 0.0f, 1.0f); // RED
