@@ -176,20 +176,20 @@ public class Lab1Game extends ApplicationAdapter {
 			barHit = false;
 		}
 		
-<<<<<<< HEAD
 		for(int i = bricks.size() -1 ; i >= 0; i--) {
-			if(theBall.getY() >= 430 && theBall.getY() <= bricks.get(i).coords.getY() + 17.5
-					&& theBall.getY() <= bricks.get(i).coords.getY() - 17.5
-					&& theBall.getX() <= bricks.get(i).coords.getX() + 42.5
-					&& theBall.getX() >= bricks.get(i).coords.getX() - 42.5) {
+			if(theBall.getY()+10 >= 430 && bricks.get(i).isHit == false
+					&& theBall.getY()+10 >= bricks.get(i).coords.getY() - 17.5
+					&& theBall.getY()-10 <= bricks.get(i).coords.getY() + 17.5
+					&& theBall.getX()-10 <= bricks.get(i).coords.getX() + 42.5
+					&& theBall.getX()+10 >= bricks.get(i).coords.getX() - 42.5) {
 				// hide the brick thats hit
-				//bricks.get(i).isHit = true;
-				bricks.remove(i);
+				bricks.get(i).isHit = true;
+				//bricks.remove(i);
+				barHit = false;
+				rightWall = false;
 			}
 		}
-		
-=======
->>>>>>> c53d38891f5f2b47b790d08e2abf08aa4da5c8a6
+
 		if(rightWall) {
 			float s = speed.x;
 			if(speed.x < 0) s *= -1;
@@ -290,6 +290,9 @@ public class Lab1Game extends ApplicationAdapter {
 				barHit = false;
 				gameOver = false;	
 				barCollision = true;
+				for(Brick b : bricks) {
+					b.isHit = false;
+				}
 			}
 		}
 		else {
