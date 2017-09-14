@@ -62,8 +62,7 @@ public class Lab1Game extends ApplicationAdapter {
 	public void create () {
 
 		String vertexShaderString;
-		String fragmentShaderString;
-		
+		String fragmentShaderString;		
 	
 		rightWall = false;
 		barHit = false;
@@ -177,6 +176,7 @@ public class Lab1Game extends ApplicationAdapter {
 			barHit = false;
 		}
 		
+<<<<<<< HEAD
 		for(int i = bricks.size() -1 ; i >= 0; i--) {
 			if(theBall.getY() >= 430 && theBall.getY() <= bricks.get(i).coords.getY() + 17.5
 					&& theBall.getY() <= bricks.get(i).coords.getY() - 17.5
@@ -188,6 +188,8 @@ public class Lab1Game extends ApplicationAdapter {
 			}
 		}
 		
+=======
+>>>>>>> c53d38891f5f2b47b790d08e2abf08aa4da5c8a6
 		if(rightWall) {
 			float s = speed.x;
 			if(speed.x < 0) s *= -1;
@@ -230,13 +232,7 @@ public class Lab1Game extends ApplicationAdapter {
 			float y = theBall.getY() - deltaTime * speed.y;
 			theBall.setY(y);
 		}
-		
-		// Do stuff when game is over
-		if(gameOver) {
-			System.out.println("gameOver!");
-			//blinkScreen();
-		}
-		
+
 		// Do stuff when game is won
 		
 		// handle if the bar touches the edges
@@ -262,25 +258,39 @@ public class Lab1Game extends ApplicationAdapter {
 	
 	private void display() {
 		
-		if(gameOver && gameOverCounter < 20) {
-			// the window
-			Gdx.gl.glClearColor(0.9f, 0.1f, 0.0f, 1.0f); // RED
-			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-			gameOverCounter++;
-		}
-		if(gameOver && gameOverCounter >= 20) {
-			// the window
-			Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // BLACK
-			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-			gameOverCounter++;
-		}
-		if(gameOver && gameOverCounter >= 40) {
-			gameOverCounter = 0;
-			endCounter++;
-		}
-		if(endCounter == 8) {
-			// Restart the game
-			System.exit(0);
+			
+		if(gameOver) {
+			if(gameOverCounter < 20) {
+				// the window
+				Gdx.gl.glClearColor(0.9f, 0.1f, 0.0f, 1.0f); // RED
+				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+				gameOverCounter++;
+			}
+			if(gameOverCounter >= 20) {
+				// the window
+				Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // BLACK
+				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+				gameOverCounter++;
+			}
+			if(gameOverCounter >= 40) {
+				gameOverCounter = 0;
+				endCounter++;
+			}
+			if(endCounter == 6) {
+				endCounter = 0;
+				gameOver = false;
+				// Object with coordinates. Will draw itself circle style.
+				theBall.setX(300.0f);
+				theBall.setY(400.0f);
+				theBar.setX(worldWidth/2);
+				theBar.setY(10.0f);
+				speed.x = 150.0f;
+				speed.y = 150.0f;
+				rightWall = false;
+				barHit = false;
+				gameOver = false;	
+				barCollision = true;
+			}
 		}
 		else {
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -321,21 +331,6 @@ public class Lab1Game extends ApplicationAdapter {
 		update();
 		display();
 	}
-	
-	public void blinkScreen() {
-		int count = 100;
-		// the window
-		for(int i = 0; i < count; i++) {
-			if(i % 2 == 0) {
-				Gdx.gl.glClearColor(0.9f, 0.1f, 0.0f, 1.0f); // RED
-				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-			}
-			Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // RED
-			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		}
-		
-	}
-
 
 	private void clearModelMatrix()
 	{
