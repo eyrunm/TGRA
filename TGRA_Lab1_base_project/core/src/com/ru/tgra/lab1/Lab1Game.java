@@ -154,20 +154,21 @@ public class Lab1Game extends ApplicationAdapter {
 		}
 		if(theBall.getX() <= ballSize) {
 			rightWall = false;
-			System.out.println("ball has touched the left side!");
 		}
 		if(theBall.getY() >= worldHeight - ballSize) {		
 			barHit = false;
 		}
 		
 		if(rightWall) {
-			float x = theBall.getX() - deltaTime * speed.x;
+			float s = speed.x;
+			if(speed.x < 0) s *= -1;
+			float x = theBall.getX() - deltaTime * s;
 			theBall.setX(x);
 		}
 		else {
-			System.out.println("x pos before: " + theBall.getX());
-			float x = theBall.getX() + deltaTime * speed.x * -1;
-			System.out.println("x pos after" + x);
+			float s = speed.x;
+			if(speed.x < 0) s *= -1;
+			float x = theBall.getX() + deltaTime * s;
 			theBall.setX(x);
 		}
 		
@@ -202,12 +203,12 @@ public class Lab1Game extends ApplicationAdapter {
 		}
 		
 		// handle if the bar touches the edges
-		if(theBar.getX() >= 981) {
-			theBar.setX(982);
+		if(theBar.getX() >= 980) {
+			theBar.setX(980);
 		}
 
-		if(theBar.getX() <= 46) {
-			theBar.setX(45);
+		if(theBar.getX() <= 44) {
+			theBar.setX(44);
 		}
 		
 		// moving the bar
