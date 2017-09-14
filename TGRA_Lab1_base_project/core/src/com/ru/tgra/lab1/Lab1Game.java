@@ -51,6 +51,7 @@ public class Lab1Game extends ApplicationAdapter {
 	private boolean barCollision;
 	private boolean gameOver;
 	private boolean gameWon;
+	private int gameWonCounter = 200;
 	private int gameOverCounter = 200;
 	private int endCounter = 0;
 	private int ballSize = 10;
@@ -221,6 +222,7 @@ public class Lab1Game extends ApplicationAdapter {
 		// Do stuff when game is won
 		if(brickHits >= 30) {
 			gameWon = true;
+			GameWon();
 		}
 		
 		// handle if the bar touches the edges
@@ -242,7 +244,7 @@ public class Lab1Game extends ApplicationAdapter {
 			theBar.setX(x);
 		}	
 	}
-	
+
 	private void display() {			
 		if(gameOver) {
 			gameOver();
@@ -326,7 +328,7 @@ public class Lab1Game extends ApplicationAdapter {
 			gameOverCounter = 0;
 			endCounter++;
 		}
-		if(endCounter == 6) {
+		if(endCounter == 8) {
 			endCounter = 0;
 			gameOver = false;
 			// Object with coordinates. Will draw itself circle style.
@@ -340,6 +342,92 @@ public class Lab1Game extends ApplicationAdapter {
 			barHit = false;
 			gameOver = false;	
 			barCollision = true;
+			brickHits = 0;
+			for(Brick b : bricks) {
+				b.isHit = false;
+			}
+		}
+	}
+	
+	private void GameWon() {
+		
+		bricks = new ArrayList<Brick>();
+		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // BLACK
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		
+		int w = 85;
+		int h = 565;
+		for(int y = 0; y < 10; y++) {
+			w = 85;
+			for(int x = 0; x < 9; x++) {
+				bricks.add(new Brick(new Point2D(w,h)));
+				w += 95;
+			}
+			h -= 45;
+		}
+		
+		bricks.get(20).isHit=true;
+		bricks.get(24).isHit=true;
+		bricks.get(40).isHit=true;
+		bricks.get(46).isHit=true;
+		bricks.get(52).isHit=true;
+		bricks.get(56).isHit=true;
+		bricks.get(60).isHit=true;
+		bricks.get(66).isHit=true;
+		bricks.get(68).isHit=true;
+		bricks.get(76).isHit=true;
+
+		clearModelMatrix();
+		for(Brick b : bricks) {
+			if(b.isHit == false) {
+				setModelMatrixTranslation(b.coords.getX(), b.coords.getY());
+				setModelMatrixScale(brickWidth, brickHeight);
+				Gdx.gl.glUniform4f(colorLoc, 1f, 66/255, 87/255, 255/244);
+				Brick.draw();
+			}
+		}
+				
+		if(gameWonCounter < 20) {
+			// the window
+			//Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // BLACK
+			//Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			gameWonCounter++;
+		}
+		if(gameWonCounter >= 20) {
+			// the window
+			//Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // BLACK
+			//Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			gameWonCounter++;
+		}
+		if(gameWonCounter >= 40) {
+			gameWonCounter = 0;
+			endCounter++;
+		}
+		
+		if(endCounter == 8) {
+			endCounter = 0;
+			theBall.setX(300.0f);
+			theBall.setY(400.0f);
+			theBar.setX(worldWidth/2);
+			theBar.setY(10.0f);
+			speed.x = 150.0f;
+			speed.y = 150.0f;
+			rightWall = false;
+			barHit = false;
+			gameOver = false;	
+			barCollision = true;
+			bricks = new ArrayList<Brick>();
+			
+			w = 85;
+			h = 565;
+			for(int y = 0; y < 3; y++) {
+				w = 85;
+				for(int x = 0; x < 10; x++) {
+					bricks.add(new Brick(new Point2D(w,h)));
+					w += 95;
+				}
+				h -= 45;
+			}
 			for(Brick b : bricks) {
 				b.isHit = false;
 			}
