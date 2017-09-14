@@ -50,6 +50,8 @@ public class Lab1Game extends ApplicationAdapter {
 	private boolean barHit;
 	private boolean barCollision;
 	private boolean gameOver;
+	private int gameOverCounter = 200;
+	private int endCounter = 0;
 	private int ballSize = 10;
 	private float barWidth = 80.0f;
 	private float barHeight = 10.0f;
@@ -124,7 +126,7 @@ public class Lab1Game extends ApplicationAdapter {
 		Gdx.gl.glUniformMatrix4fv(modelMatrixLoc, 1, false, modelMatrix);
 		
 		// the window
-		Gdx.gl.glClearColor(0.4f, 0.6f, 1.0f, 1.0f);
+		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 		//COLOR IS SET HERE
 		Gdx.gl.glUniform4f(colorLoc, 0.7f, 0.2f, 0, 1);
@@ -218,6 +220,14 @@ public class Lab1Game extends ApplicationAdapter {
 			theBall.setY(y);
 		}
 		
+		// Do stuff when game is over
+		if(gameOver) {
+			System.out.println("gameOver!");
+			//blinkScreen();
+		}
+		
+		// Do stuff when game is won
+		
 		// handle if the bar touches the edges
 		if(theBar.getX() >= 980) {
 			theBar.setX(980);
@@ -241,7 +251,30 @@ public class Lab1Game extends ApplicationAdapter {
 	
 	private void display() {
 		
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		if(gameOver && gameOverCounter < 20) {
+			// the window
+			Gdx.gl.glClearColor(0.9f, 0.1f, 0.0f, 1.0f); // RED
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			gameOverCounter++;
+		}
+		if(gameOver && gameOverCounter >= 20) {
+			// the window
+			Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // BLACK
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			gameOverCounter++;
+		}
+		if(gameOver && gameOverCounter >= 40) {
+			gameOverCounter = 0;
+			endCounter++;
+		}
+		if(endCounter == 8) {
+			// Restart the game
+			System.exit(0);
+		}
+		else {
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		}
+		
 		
 		Gdx.gl.glUniform4f(colorLoc, 0.9f, 0.8f, 0, 1);
 		Gdx.gl20.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -283,6 +316,20 @@ public class Lab1Game extends ApplicationAdapter {
 		//put the code inside the update and display methods, depending on the nature of the code
 		update();
 		display();
+	}
+	
+	public void blinkScreen() {
+		int count = 100;
+		// the window
+		for(int i = 0; i < count; i++) {
+			if(i % 2 == 0) {
+				Gdx.gl.glClearColor(0.9f, 0.1f, 0.0f, 1.0f); // RED
+				Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			}
+			Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // RED
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		}
+		
 	}
 
 
