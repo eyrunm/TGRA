@@ -135,13 +135,13 @@ public class Lab1Game extends ApplicationAdapter {
 		
 		int w = 85;
 		int h = 565;
-		for(int x = 0; x < 10; x++) {
-			bricks.add(new Point2D(w, h));
-			/*for(int y = 0; y < 3; y++) {
+		for(int y = 0; y < 3; y++) {
+			w = 85;
+			for(int x = 0; x < 10; x++) {
 				bricks.add(new Point2D(w, h));
-			}*/
-			w += 95;
-			//h -= 45;
+				w += 95;
+			}
+			h -= 45;
 		}
 
 		Ball.create(positionLoc);
@@ -176,6 +176,12 @@ public class Lab1Game extends ApplicationAdapter {
 		if(theBall.getY() >= worldHeight - ballSize) {		
 			barHit = false;
 		}
+		
+		/*for(Point2D b : bricks) {
+			if(theBall.getY() >= b.getY() && theBall.getX() >= b.getX()) {
+				speed.y *= -1;
+			}
+		}*/
 		
 		if(rightWall) {
 			float s = speed.x;
@@ -300,15 +306,6 @@ public class Lab1Game extends ApplicationAdapter {
 			Gdx.gl.glUniform4f(colorLoc, 1f, 66/255, 87/255, 255/244);
 			Brick.draw();
 		}
-		/*
-		 // BRICKS
-		for(Point2D b : boxes) {
-			setModelMatrixTranslation(b.getXFromPair(), b.getYFromPair());
-			Gdx.gl.glUniform4f(colorLoc, 0.4f, 0.0f, 0.3f, 1); // purple
-			Gdx.gl.glDrawArrays(GL20.GL_TRIANGLE_STRIP, 0, 4); // draw the rest in purple
-		}
-		*/
-
 	}
 
 	@Override
