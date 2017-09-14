@@ -197,7 +197,7 @@ public class Lab1Game extends ApplicationAdapter {
 		
 		if(barHit) {
 			if(barCollision) handleBar();
-				
+			
 			float s = speed.y;
 			if(speed.y < 0) s *= -1;
 			float y = theBall.getY() + deltaTime * s;
