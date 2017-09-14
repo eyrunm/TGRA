@@ -41,13 +41,13 @@ public class Lab1Game extends ApplicationAdapter {
 	// Movement of the ball should be along the vector. Changes of direction
 	// are retrieved by manipulating this vector and changes of position are retrieved by
 	// using it : [ positionX + deltaTime * speedX ]
-	Vector2D speed = new Vector2D(150.0f, 150.0f);
+	Vector2D speed = new Vector2D(180.0f, 180.0f);
 	
 	// a variable used to scale movements between computers/graphic cards so they will feel the same.
 	private float deltaTime;
 	
 	public boolean rightWall;
-	private boolean barHit;
+	private boolean floorHit;
 	private boolean barCollision;
 	private boolean gameOver;
 	private boolean gameWon;
@@ -68,7 +68,7 @@ public class Lab1Game extends ApplicationAdapter {
 		String fragmentShaderString;		
 	
 		rightWall = false;
-		barHit = false;
+		floorHit = false;
 		gameOver = false;
 		gameWon = false;
 		barCollision = true;
@@ -170,14 +170,14 @@ public class Lab1Game extends ApplicationAdapter {
 		if(theBall.getY() <= 20 && theBall.getY() > ballSize
 				&& theBall.getX() <= theBar.getX()+40 
 				&& theBall.getX() >= theBar.getX()-40) {
-			barHit = true;
+			floorHit = true;
 			barCollision = true;
 		}
 		if(theBall.getX() <= ballSize) {
 			rightWall = false;
 		}
 		if(theBall.getY() >= worldHeight - ballSize) {		
-			barHit = false;
+			floorHit = false;
 		}
 		
 		for(int i = bricks.size() -1 ; i >= 0; i--) {
@@ -189,9 +189,7 @@ public class Lab1Game extends ApplicationAdapter {
 				// hide the brick thats hit
 				bricks.get(i).isHit = true;
 				brickHits++;
-				//bricks.remove(i);
-				barHit = false;
-				rightWall = false;
+				brickCollision(bricks.get(i));
 			}
 		}
 
@@ -208,21 +206,25 @@ public class Lab1Game extends ApplicationAdapter {
 			theBall.setX(x);
 		}
 		
-		if(barHit) {
+		if(floorHit) {
 			if(barCollision) handleBar();
 				
-			float y = theBall.getY() + deltaTime * speed.y;
+			float s = speed.y;
+			if(speed.y < 0) s *= -1;
+			float y = theBall.getY() + deltaTime * s;
 			theBall.setY(y);
 		}
 		else {
-			float y = theBall.getY() - deltaTime * speed.y;
+			float s = speed.y;
+			if(speed.y < 0) s *= -1;
+			float y = theBall.getY() - deltaTime * s;
 			theBall.setY(y);
 		}
 
 		// Do stuff when game is won
 		if(brickHits >= 30) {
 			gameWon = true;
-			GameWon();
+			gameWon();
 		}
 		
 		// handle if the bar touches the edges
@@ -247,7 +249,8 @@ public class Lab1Game extends ApplicationAdapter {
 
 	private void display() {			
 		if(gameOver) {
-			gameOver();
+			//gameOver();
+			gameWon();
 		}
 		else {
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -298,17 +301,60 @@ public class Lab1Game extends ApplicationAdapter {
 		
 		// find the position of the ball relative to the center of the bar (-1 to 1)
 		float newPosX = ((theBall.getX() - theBar.getX()) / (barWidth/2));
-		System.out.println("Hits the bar at: "+ newPosX);
-		System.out.println(newPosX);
-		System.out.println("Speed.x before is: "+speed.x);
+
 		// find the direction X value using newPosX and some float indicating effect percentage.
 		speed.x = (float) (speedXY * newPosX * 0.9);
-		System.out.println("Speed.x after is: "+speed.x);
 		
 		// update speedY to keep the overall speed the same.
 		speed.y = (float) (Math.sqrt(speedXY*speedXY - speed.x*speed.x));
-		System.out.println("Speed.y is: "+speed.y);
 		barCollision = false;
+	}
+	
+	private void brickCollision(Brick b) {
+		if(speed.x < 0) {			// DOWN-LEFT
+			rightWall = true;
+			if(speed.y < 0) {
+				// ball touches the bricks right side,
+				// the ball center is on the right side of brick on collision.
+				if(theBall.getX()+10 >= b.coords.getX() + 17.5) {
+					rightWall = false;
+					theBall.setX(theBall.getX()-6);
+				}
+				// ball hits the bricks top
+				floorHit = true;
+				theBall.setY(theBall.getY()+6);
+				
+			}						// UP-LEFT
+			if(speed.y >= 0) {
+				if(theBall.getX()+10 >= b.coords.getX() + 17.5) {
+					rightWall = false;
+					theBall.setX(theBall.getX()-6);
+				}
+				floorHit = false;
+				theBall.setY(theBall.getY()-6);
+			}
+		}
+		if(speed.x >= 0) {			// UP-RIGHT
+			rightWall = false;
+			if(speed.y >= 0) {
+				// the ball touched the bricks bottom
+				if(theBall.getX()+10 >= b.coords.getX() - 17.5) {
+					floorHit = false;
+					theBall.setY(theBall.getY()-6);
+				}
+				// the ball touched the bricks left side
+				rightWall = true;	
+				theBall.setX(theBall.getX()+6);
+			}
+			if(speed.y < 0) {		// DOWN-RIGHT
+				if(theBall.getX()+10 <= b.coords.getX() - 17.5) {
+					rightWall = true;
+					theBall.setX(theBall.getX()+6);
+				}
+				floorHit = true;
+				theBall.setY(theBall.getY()+6);
+			}
+		}
 	}
 	
 	private void gameOver() {
@@ -339,7 +385,7 @@ public class Lab1Game extends ApplicationAdapter {
 			speed.x = 150.0f;
 			speed.y = 150.0f;
 			rightWall = false;
-			barHit = false;
+			floorHit = false;
 			gameOver = false;	
 			barCollision = true;
 			brickHits = 0;
@@ -349,7 +395,7 @@ public class Lab1Game extends ApplicationAdapter {
 		}
 	}
 	
-	private void GameWon() {
+	private void gameWon() {
 		
 		bricks = new ArrayList<Brick>();
 		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // BLACK
@@ -413,7 +459,7 @@ public class Lab1Game extends ApplicationAdapter {
 			speed.x = 150.0f;
 			speed.y = 150.0f;
 			rightWall = false;
-			barHit = false;
+			floorHit = false;
 			gameOver = false;	
 			barCollision = true;
 			bricks = new ArrayList<Brick>();
