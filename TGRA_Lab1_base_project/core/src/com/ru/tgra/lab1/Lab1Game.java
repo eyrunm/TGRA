@@ -47,7 +47,7 @@ public class Lab1Game extends ApplicationAdapter {
 	private float deltaTime;
 	
 	public boolean rightWall;
-	private boolean floorHit;
+	private boolean barHit;
 	private boolean barCollision;
 	private boolean gameOver;
 	private boolean gameWon;
@@ -68,7 +68,7 @@ public class Lab1Game extends ApplicationAdapter {
 		String fragmentShaderString;		
 	
 		rightWall = false;
-		floorHit = false;
+		barHit = false;
 		gameOver = false;
 		gameWon = false;
 		barCollision = true;
@@ -170,14 +170,14 @@ public class Lab1Game extends ApplicationAdapter {
 		if(theBall.getY() <= 20 && theBall.getY() > ballSize
 				&& theBall.getX() <= theBar.getX()+40 
 				&& theBall.getX() >= theBar.getX()-40) {
-			floorHit = true;
+			barHit = true;
 			barCollision = true;
 		}
 		if(theBall.getX() <= ballSize) {
 			rightWall = false;
 		}
 		if(theBall.getY() >= worldHeight - ballSize) {		
-			floorHit = false;
+			barHit = false;
 		}
 		
 		for(int i = bricks.size() -1 ; i >= 0; i--) {
@@ -206,7 +206,7 @@ public class Lab1Game extends ApplicationAdapter {
 			theBall.setX(x);
 		}
 		
-		if(floorHit) {
+		if(barHit) {
 			if(barCollision) handleBar();
 				
 			float s = speed.y;
@@ -320,7 +320,7 @@ public class Lab1Game extends ApplicationAdapter {
 					theBall.setX(theBall.getX()-6);
 				}
 				// ball hits the bricks top
-				floorHit = true;
+				barHit = true;
 				theBall.setY(theBall.getY()+6);
 				
 			}						// UP-LEFT
@@ -329,7 +329,7 @@ public class Lab1Game extends ApplicationAdapter {
 					rightWall = false;
 					theBall.setX(theBall.getX()-6);
 				}
-				floorHit = false;
+				barHit = false;
 				theBall.setY(theBall.getY()-6);
 			}
 		}
@@ -338,7 +338,7 @@ public class Lab1Game extends ApplicationAdapter {
 			if(speed.y >= 0) {
 				// the ball touched the bricks bottom
 				if(theBall.getX()+10 >= b.coords.getX() - 17.5) {
-					floorHit = false;
+					barHit = false;
 					theBall.setY(theBall.getY()-6);
 				}
 				// the ball touched the bricks left side
@@ -350,7 +350,7 @@ public class Lab1Game extends ApplicationAdapter {
 					rightWall = true;
 					theBall.setX(theBall.getX()+6);
 				}
-				floorHit = true;
+				barHit = true;
 				theBall.setY(theBall.getY()+6);
 			}
 		}
@@ -374,36 +374,11 @@ public class Lab1Game extends ApplicationAdapter {
 			endCounter++;
 		}
 		if(endCounter == 8) {
-<<<<<<< HEAD
-			endCounter = 0;
-			gameOver = false;
-			// Object with coordinates. Will draw itself circle style.
-			theBall.setX(300.0f);
-			theBall.setY(400.0f);
-			theBar.setX(worldWidth/2);
-			theBar.setY(10.0f);
-			speed.x = 150.0f;
-			speed.y = 150.0f;
-			rightWall = false;
-			floorHit = false;
-			gameOver = false;	
-			barCollision = true;
-			brickHits = 0;
-			for(Brick b : bricks) {
-				b.isHit = false;
-			}
-		}
-	}
-	
-	private void gameWon() {
-		
-=======
 			restartValues();
 		}
 	}
 	
-	private void GameWon() {
->>>>>>> 891cffe4e730a72a8d9e1e1326b5a4626635eb2d
+	private void gameWon() {
 		bricks = new ArrayList<Brick>();
 		
 		int w = 125;
@@ -448,20 +423,6 @@ public class Lab1Game extends ApplicationAdapter {
 			endCounter++;
 		}
 		if(endCounter == 8) {
-<<<<<<< HEAD
-			endCounter = 0;
-			theBall.setX(300.0f);
-			theBall.setY(400.0f);
-			theBar.setX(worldWidth/2);
-			theBar.setY(10.0f);
-			speed.x = 150.0f;
-			speed.y = 150.0f;
-			rightWall = false;
-			floorHit = false;
-			gameOver = false;	
-			barCollision = true;
-=======
->>>>>>> 891cffe4e730a72a8d9e1e1326b5a4626635eb2d
 			bricks = new ArrayList<Brick>();
 			w = 85;
 			h = 565;
